@@ -39,16 +39,23 @@ func (df *discreteFrechet) distance(i int, j int) float64 {
 	d := df.firstCurve[i].Distance(df.secondCurve[j])
 
 	if i == 0 && j == 0 {
+		df.memo[i][j] = d
 		return d
 	}
 
 	if j == 0 {
-		return math.Max(df.distance(i-1, j), d)
+		res := math.Max(df.distance(i-1, j), d)
+		df.memo[i][j] = res
+		return res
 	}
 
 	if i == 0 {
-		return math.Max(df.distance(i, j-1), d)
+		res := math.Max(df.distance(i, j-1), d)
+		df.memo[i][j] = res
+		return res
 	}
 
-	return math.Max(math.Min(df.distance(i-1, j), math.Min(df.distance(i-1, j-1), df.distance(i, j-1))), d)
+	res := math.Max(math.Min(df.distance(i-1, j), math.Min(df.distance(i-1, j-1), df.distance(i, j-1))), d)
+	df.memo[i][j] = res
+	return res
 }
