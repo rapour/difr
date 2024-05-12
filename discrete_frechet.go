@@ -25,6 +25,10 @@ func (df *discreteFrechet) Distance() float64 {
 	i := len(df.firstCurve)
 	j := len(df.secondCurve)
 
+	if i == 0 || j == 0 {
+		return 0
+	}
+
 	df.memo = NewMatrix(i, j, -1)
 
 	return df.distance(i-1, j-1)
