@@ -16,6 +16,8 @@ func (p point) Distance(op Point) float64 {
 
 	if o, ok := op.(point); ok {
 		return math.Sqrt(math.Pow((p.x-o.x), 2) + math.Pow((p.y-o.y), 2))
+	} else if o, ok := op.(*point); ok {
+		return math.Sqrt(math.Pow((p.x-o.x), 2) + math.Pow((p.y-o.y), 2))
 	}
 
 	return 0
