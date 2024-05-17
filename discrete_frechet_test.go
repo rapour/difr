@@ -80,7 +80,7 @@ func TestFrechetDistance(t *testing.T) {
 		{
 			Name:        "1 distance",
 			FirstCurve:  []Point{point{x: 0, y: 0}, point{x: 1, y: 0}},
-			SecondCurve: []Point{point{x: 1, y: 0}, point{x: 1, y: 1}},
+			SecondCurve: []Point{point{x: 0, y: 1}, point{x: 1, y: 1}},
 			Distance:    1,
 		},
 	}
@@ -91,6 +91,45 @@ func TestFrechetDistance(t *testing.T) {
 			df := NewDiscreteFrechet(c.FirstCurve, c.SecondCurve)
 
 			require.Equal(t, c.Distance, df.Distance())
+
+		})
+	}
+
+}
+
+func TestFrechetDistanceWithWeight(t *testing.T) {
+
+	cases := []struct {
+		Name        string
+		FirstCurve  []Point
+		SecondCurve []Point
+		Distance    float64
+		Weight      float64
+	}{
+		{
+			Name:        "zero distance",
+			FirstCurve:  []Point{point{x: 1, y: 1}, point{x: 2, y: 2}},
+			SecondCurve: []Point{point{x: 1, y: 1}, point{x: 2, y: 2}},
+			Distance:    0,
+			Weight:      0,
+		},
+		{
+			Name:        "1 distance",
+			FirstCurve:  []Point{point{x: 0, y: 0}, point{x: 1, y: 0}},
+			SecondCurve: []Point{point{x: 0, y: 1}, point{x: 1, y: 1}},
+			Distance:    1,
+			Weight:      2,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Name, func(t *testing.T) {
+
+			df := NewDiscreteFrechet(c.FirstCurve, c.SecondCurve)
+
+			d, w := df.DistanceWithWeight()
+			require.Equal(t, c.Distance, d)
+			require.Equal(t, c.Weight, w)
 
 		})
 	}
