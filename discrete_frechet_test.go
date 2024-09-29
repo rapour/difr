@@ -90,35 +90,32 @@ func TestFrechetDistance(t *testing.T) {
 
 			df := NewDiscreteFrechet(c.FirstCurve, c.SecondCurve)
 
-			require.Equal(t, c.Distance, df.Distance())
+			require.Equal(t, c.Distance, df.DiscreteFrechetDistance())
 
 		})
 	}
 
 }
 
-func TestFrechetDistanceWithWeight(t *testing.T) {
+func TestDynamicTimeWrapping(t *testing.T) {
 
 	cases := []struct {
 		Name        string
 		FirstCurve  []Point
 		SecondCurve []Point
 		Distance    float64
-		Weight      float64
 	}{
 		{
 			Name:        "zero distance",
 			FirstCurve:  []Point{point{x: 1, y: 1}, point{x: 2, y: 2}},
 			SecondCurve: []Point{point{x: 1, y: 1}, point{x: 2, y: 2}},
 			Distance:    0,
-			Weight:      0,
 		},
 		{
-			Name:        "1 distance",
+			Name:        "2 distance",
 			FirstCurve:  []Point{point{x: 0, y: 0}, point{x: 1, y: 0}},
 			SecondCurve: []Point{point{x: 0, y: 1}, point{x: 1, y: 1}},
-			Distance:    1,
-			Weight:      2,
+			Distance:    2,
 		},
 	}
 
@@ -127,10 +124,42 @@ func TestFrechetDistanceWithWeight(t *testing.T) {
 
 			df := NewDiscreteFrechet(c.FirstCurve, c.SecondCurve)
 
-			d, w := df.DistanceWithWeight()
+			d := df.DynamicTimeWrapping()
 			require.Equal(t, c.Distance, d)
-			require.Equal(t, c.Weight, w)
+		})
+	}
 
+}
+
+func TestAverageDiscreteFrechetDistance(t *testing.T) {
+
+	cases := []struct {
+		Name        string
+		FirstCurve  []Point
+		SecondCurve []Point
+		Distance    float64
+	}{
+		{
+			Name:        "zero distance",
+			FirstCurve:  []Point{point{x: 1, y: 1}, point{x: 2, y: 2}},
+			SecondCurve: []Point{point{x: 1, y: 1}, point{x: 2, y: 2}},
+			Distance:    0,
+		},
+		{
+			Name:        "sqrt(2)/2 distance",
+			FirstCurve:  []Point{point{x: 0, y: 0}, point{x: 1, y: 0}},
+			SecondCurve: []Point{point{x: 0, y: 1}, point{x: 1, y: 1}},
+			Distance:    0.7071067811865476,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Name, func(t *testing.T) {
+
+			df := NewDiscreteFrechet(c.FirstCurve, c.SecondCurve)
+
+			d := df.AverageDiscreteFrechetDistance()
+			require.Equal(t, c.Distance, d)
 		})
 	}
 
